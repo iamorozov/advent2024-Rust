@@ -30,3 +30,4 @@ regex = "1.11.1"
 tinyjson = "2.5.1"
 
 # Solution dependencies
+sscanf = "0.4"
