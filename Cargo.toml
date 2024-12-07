@@ -31,3 +31,4 @@ tinyjson = "2.5.1"
 
 # Solution dependencies
 sscanf = "0.4"
+memoize = "0.4.2"
