@@ -79,61 +79,87 @@ fn checksum(compacted: Vec<u64>) -> u64 {
         .sum()
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
-    let (files, space) = extract_files_and_space_2(input);
+pub fn part_two(input: &str) -> Option<u64> {
+    let (files, _) = extract_files_and_space_2(input);
 
-    let len: u64 = input
+    let mut filesystem: Vec<Option<u64>> = input
         .trim()
         .chars()
         .map(|ch| ch.to_digit(10).unwrap() as u64)
-        .sum();
+        .enumerate()
+        .map(|(i, len)| if i % 2 == 0 { vec![Some((i / 2) as u64); len as usize] } else { vec![None; len as usize] })
+        .flatten()
+        .collect();
 
-    let compacted = compact2(&files, &space, len as usize);
+    let compacted = compact2(&mut filesystem, files);
 
-    Some(0)
+    Some(checksum(compacted))
 }
 
-fn extract_files_and_space_2(input: &str) -> (Vec<(u64, u64, u64)>, Vec<(u64, u64)>) {
+fn extract_files_and_space_2(input: &str) -> (Vec<(u64, u64)>, Vec<u64>) {
     let (files, space): (Vec<_>, Vec<_>) = input
         .trim()
         .chars()
         .map(|ch| ch.to_digit(10).unwrap() as u64)
         .enumerate()
-        .map(|(i, l)| vec![i; l as usize])
-        .flatten()
-        .enumerate()
         .partition_map(|(i, d)| {
             if i % 2 == 0 {
-                Either::Left((i as u64, (i / 2) as u64, d))
+                Either::Left(((i / 2) as u64, d))
             } else {
-                Either::Right((i as u64, d))
+                Either::Right(d)
             }
         });
 
     (files, space)
 }
 
-fn compact2(files: &Vec<(u64, u64, u64)>, spaces: &Vec<(u64, u64)>, n: usize) -> Vec<u64> {
-    let mut result: Vec<u64> = vec![0; n];
-    let mut s_copy = spaces.iter().copied().collect();
+fn compact2(filesystem: &mut Vec<Option<u64>>, files: Vec<(u64, u64)>) -> Vec<u64> {
+    // let mut result: Vec<Option<u64>> = vec![None; filesystem.len()];
 
-    for (file_i, file_id, file_len) in files.iter().rev() {
-        // find suitable space
-        let space = spaces.iter().find(|(_, size)| size >= file_len);
+    // println!("filesystem: {:?}", filesystem);
+    // println!("files: {:?}", files);
 
-        match space {
-            Some((space_i, _)) => {
-                // if found add file to the result from the space i
-                result[*space_i as usize] = (*file_id, *file_len);
+    for (file_id, file_size) in files.iter().rev() {
+        // find a file to copy from the end of the filesystem which is not None and has the same id
+        let mut file_to_copy_i = 0;
+        for i in (0..filesystem.len()).rev() {
+            if filesystem[i] == Some(*file_id) {
+                file_to_copy_i = (i as i64 - *file_size as i64 + 1) as usize;
+                break;
+            }
+        }
+
+        // find a space to copy the file to from the begginning of the filesystem
+        let mut space_to_copy_i = None;
+        for i in 0..filesystem.len() {
+            // if a window starting from i is big enough to fit the file
+            if i < file_to_copy_i && filesystem[i..].iter().take(*file_size as usize).all(|x| *x == None) {
+                space_to_copy_i = Some(i);
+                break;
+            }
+        }
+
+        // if space_to_copy is not none, copy the file to the result and delete the file from the initial position, else copy the file to the result to the initial position
+        match space_to_copy_i {
+            Some(space_i) => {
+                for i in 0..*file_size {
+                    filesystem[space_i + i as usize] = Some(*file_id);
+                    filesystem[file_to_copy_i + i as usize] = None;
+                }
             }
             None => {
-                // if not found add file to the result at file id
-                result[*file_i as usize] = (*file_id, *file_len);
+                for i in 0..*file_size {
+                    filesystem[file_to_copy_i + i as usize] = Some(*file_id);
+                }
             }
         }
     }
 
-    result
+    // println!("result: {:?}", filesystem);
+
+    let r = filesystem.into_iter().map(|m| m.unwrap_or(0)).collect();
+
+    r
 }
 
 #[cfg(test)]

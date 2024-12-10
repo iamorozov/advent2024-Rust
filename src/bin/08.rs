@@ -1,5 +1,3 @@
-use std::cmp::{max, min};
-
 use itertools::Itertools;
 
 advent_of_code::solution!(8);
