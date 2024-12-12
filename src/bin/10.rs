@@ -2,23 +2,16 @@ use std::collections::{HashSet, VecDeque};
 
 use itertools::Itertools;
 
+use advent_of_code::utils::get_int_matrix;
+
 advent_of_code::solution!(10);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let matrix = get_map(input);
+    let matrix = get_int_matrix(input);
     let trailheads = find_traiheads(&matrix);
     let result = find_trailheads_score(&matrix, &trailheads);
 
     return Some(result);
-}
-
-fn get_map(input: &str) -> Vec<Vec<u32>> {
-    return input.lines()
-        .map(|line| line.chars()
-            .map(|ch| ch.to_digit(10).unwrap())
-            .collect_vec()
-        )
-        .collect_vec();
 }
 
 fn find_traiheads(matrix: &Vec<Vec<u32>>) -> Vec<(usize, usize)> {
@@ -70,7 +63,7 @@ fn find_trailhead_score(matrix: &Vec<Vec<u32>>, x: usize, y: usize) -> u32 {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let matrix = get_map(input);
+    let matrix = get_int_matrix(input);
     let trailheads = find_traiheads(&matrix);
     let result = find_trailheads_rating(&matrix, &trailheads);
 

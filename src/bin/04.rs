@@ -1,25 +1,19 @@
-use itertools::Itertools;
+use advent_of_code::utils::get_char_matrix;
 
 advent_of_code::solution!(4);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let matrix = get_matrix(input);
+    let matrix = get_char_matrix(input);
     let result = find_xmas(&matrix);
 
     return Some(result);
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let matrix = get_matrix(input);
+    let matrix = get_char_matrix(input);
     let result = find_x_mas(&matrix);
 
     return Some(result);
-}
-
-fn get_matrix(input: &str) -> Vec<Vec<char>> {
-    return input.lines()
-        .map(|line| line.chars().collect_vec())
-        .collect_vec();
 }
 
 fn find_xmas(matrix: &Vec<Vec<char>>) -> u32 {

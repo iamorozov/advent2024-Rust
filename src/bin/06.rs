@@ -1,10 +1,11 @@
-use itertools::Itertools;
 use std::collections::HashSet;
+
+use advent_of_code::utils::get_char_matrix;
 
 advent_of_code::solution!(6);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let grid = get_matrix(input);
+    let grid = get_char_matrix(input);
     let start = find_start(&grid);
     let path = calculate_path(&grid, start);
     Some(path.len() as u32)
@@ -48,7 +49,7 @@ fn calculate_path(grid: &Vec<Vec<char>>, start: (usize, usize)) -> HashSet<(usiz
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let grid = get_matrix(input);
+    let grid = get_char_matrix(input);
     let start = find_start(&grid);
     let result = count_cycles(&grid, start);
     Some(result)
@@ -108,12 +109,6 @@ fn count_cycles(grid: &Vec<Vec<char>>, start: (usize, usize)) -> u32 {
             l
         })
         .count() as u32
-}
-
-fn get_matrix(input: &str) -> Vec<Vec<char>> {
-    return input.lines()
-        .map(|line| line.chars().collect_vec())
-        .collect_vec();
 }
 
 #[cfg(test)]

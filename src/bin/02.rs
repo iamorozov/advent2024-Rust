@@ -1,24 +1,15 @@
-use itertools::Itertools;
+use advent_of_code::utils::get_int_matrix;
 
 advent_of_code::solution!(2);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let reports = get_reports(input);
+    let reports = get_int_matrix(input);
     Some(count_safe_reports(reports))
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let reports = get_reports(input);
+    let reports = get_int_matrix(input);
     Some(count_safe_reports_with_dampener(reports))
-}
-
-fn get_reports(input: &str) -> Vec<Vec<u32>> {
-    return input.lines()
-        .map ( |line| line.split_whitespace()
-            .map(|n| n.parse::<u32>().unwrap())
-            .collect_vec()
-        )
-        .collect_vec();
 }
 
 fn count_safe_reports(reports: Vec<Vec<u32>>) -> u32 {

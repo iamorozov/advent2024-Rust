@@ -16,8 +16,6 @@ pub fn part_one(input: &str) -> Option<u32> {
         .unique()
         .count();
 
-    // println!("{:?}", antennas);
-
     Some(result as u32)
 }
 
@@ -73,8 +71,6 @@ pub fn part_two(input: &str) -> Option<u32> {
         .flatten()
         .unique()
         .count();
-
-    // println!("{:?}", antennas);
 
     Some(result as u32)
 }

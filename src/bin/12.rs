@@ -1,11 +1,13 @@
-use std::{collections::{HashMap, HashSet, VecDeque}, hash::Hash};
+use std::collections::{HashMap, HashSet, VecDeque};
 
 use itertools::Itertools;
+
+use advent_of_code::utils::get_char_matrix;
 
 advent_of_code::solution!(12);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let farm = get_matrix(input);
+    let farm = get_char_matrix(input);
     let mut result = 0;
     let mut visited: HashSet<(usize, usize)> = HashSet::new();
 
@@ -16,7 +18,6 @@ pub fn part_one(input: &str) -> Option<u32> {
             }
 
             let (perimeter, area, region) = find_region(&farm, i, j);
-            // println!("type: {}, perimeter: {}, area: {}", farm[i][j], perimeter, area);
 
             result += area * perimeter;
             visited.extend(region);
@@ -24,12 +25,6 @@ pub fn part_one(input: &str) -> Option<u32> {
     }
 
     Some(result)
-}
-
-fn get_matrix(input: &str) -> Vec<Vec<char>> {
-    return input.lines()
-        .map(|line| line.chars().collect_vec())
-        .collect_vec();
 }
 
 fn find_region(farm: &Vec<Vec<char>>, i: usize, j: usize) -> (u32, u32, HashSet<(usize, usize)>) {
@@ -63,7 +58,7 @@ fn find_region(farm: &Vec<Vec<char>>, i: usize, j: usize) -> (u32, u32, HashSet<
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let farm = get_matrix(input);
+    let farm = get_char_matrix(input);
     let mut result = 0;
     let mut visited: HashSet<(usize, usize)> = HashSet::new();
 
@@ -74,7 +69,6 @@ pub fn part_two(input: &str) -> Option<u32> {
             }
 
             let (sides, area, region) = find_region_with_sides(&farm, i, j);
-            // println!("type: {}, sides: {}, area: {}", farm[i][j], sides, area);
 
             result += area * sides;
             visited.extend(region);
@@ -114,8 +108,6 @@ fn find_region_with_sides(farm: &Vec<Vec<char>>, i: usize, j: usize) -> (u32, u3
                 } else if dx == -1 && dy == 0 {
                     sides_top.entry(x).or_insert(vec![]).push(y);
                 }
-
-                continue;
             } else {
                 if !visited.contains(&(nx as usize, ny as usize)) && !queue.contains(&(nx as usize, ny as usize)) {
                     queue.push_back((nx as usize, ny as usize));
@@ -155,7 +147,7 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, Some(140));
+        assert_eq!(result, Some(1930));
     }
 
     #[test]
