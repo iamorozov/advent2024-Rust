@@ -53,14 +53,25 @@ fn calculate_tokens(ax: i64, ay: i64, bx: i64, by: i64, prize_x: i64, prize_y: i
     }
 }
 
+fn solve_machine(ax: i64, ay: i64, bx: i64, by: i64, prize_x: i64, prize_y: i64) -> i64 {
+    let prize = (prize_x, prize_y);
+    let det = ax * by - ay * bx;
+    let a = (prize.0 * by - prize.1 * bx) / det;
+    let b = (ax * prize.1 - ay * prize.0) / det;
+    if (ax * a + bx * b, ay * a + by * b) == (prize.0, prize.1) {
+        a * 3 + b
+    } else {
+        0
+    }
+}
+
 pub fn part_two(input: &str) -> Option<u64> {
     let tokens = extract_machines(input, 10000000000000)
         .into_iter()
-        .map(|(ax, ay, bx, by, prize_x, prize_y)| calculate_tokens(ax, ay, bx, by, prize_x, prize_y))
-        .flatten()
-        .sum();
+        .map(|(ax, ay, bx, by, prize_x, prize_y)| solve_machine(ax, ay, bx, by, prize_x, prize_y))
+        .sum::<i64>() as u64;
 
-Some(tokens)
+    Some(tokens)
 }
 
 #[cfg(test)]
