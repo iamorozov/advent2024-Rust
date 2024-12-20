@@ -1,7 +1,5 @@
 use std::collections::{HashSet, VecDeque};
 
-use itertools::Itertools;
-
 use advent_of_code::utils::get_int_matrix;
 
 advent_of_code::solution!(10);

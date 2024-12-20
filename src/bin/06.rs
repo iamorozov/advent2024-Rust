@@ -1,24 +1,14 @@
 use std::collections::HashSet;
 
-use advent_of_code::utils::get_char_matrix;
+use advent_of_code::utils::{find_position_in_matrix, get_char_matrix};
 
 advent_of_code::solution!(6);
 
 pub fn part_one(input: &str) -> Option<u32> {
     let grid = get_char_matrix(input);
-    let start = find_start(&grid);
+    let start = find_position_in_matrix(&grid, '^');
     let path = calculate_path(&grid, start);
     Some(path.len() as u32)
-}
-
-fn find_start(grid: &Vec<Vec<char>>) -> (usize, usize) {
-    let x = grid.iter()
-        .position(|row| row.contains(&'^'))
-        .unwrap();
-
-    let y = grid[x].iter().position(|ch| ch == &'^').unwrap();
-
-    (x, y)
 }
 
 fn turn(dir: (i32, i32)) -> (i32, i32) {
@@ -50,7 +40,7 @@ fn calculate_path(grid: &Vec<Vec<char>>, start: (usize, usize)) -> HashSet<(usiz
 
 pub fn part_two(input: &str) -> Option<u32> {
     let grid = get_char_matrix(input);
-    let start = find_start(&grid);
+    let start = find_position_in_matrix(&grid, '^');
     let result = count_cycles(&grid, start);
     Some(result)
 }
